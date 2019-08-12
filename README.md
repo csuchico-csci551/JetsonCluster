@@ -96,6 +96,8 @@ $ sudo service networking restart
 
 If you already have ssh public/private keys, you can move on to the next step. If your id_rsa ssh keys, the default ones, are password protected, this will be a problem for use with Ansible. There is likely a way to use a secondary key so come see me in office hours if you need help here.
 
+#### Generate New Key
+
 Use the following command to create your ssh RSA public/private key pair:
 
 ```bash
@@ -122,9 +124,27 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-This will generate new ssh key, for example I ran this on one of my Jetson Boards for the above example. I recommend hitting enter for all of the prompts as the defaults and no passphrase is recommended for this application. Do not do this if you already have a SSH key pair. 
+This will generate new ssh key, for example I ran this on one of my Jetson Boards for the above example. I recommend hitting enter for all of the prompts as the defaults and no passphrase is recommended for this application. Do not do this if you already have a SSH key pair.
 
+#### Copy key to each board
 
+Now we'll want to copy the SSH keys to all of the Jetson Nano boards. You will need to do the following to each of the Jetson Nano ip addresses. You may want to SSH to each board via password first to remove the complication of it prompting about if you want to connect during the key transfer:
+
+```bash
+$ ssh-copy-id bryan@192.168.1.2
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/bryan/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+bryan@192.168.1.2's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'bryan@192.168.1.2'"
+and check to make sure that only the key(s) you wanted were added.
+$
+```
+
+Now you should be able to copy via ssh to the machine without password. Check that this works before moving on for all of your Jetson Nano boards. 
 
 
 ## Step-by-Step Cluster Instructions
