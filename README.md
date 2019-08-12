@@ -148,7 +148,7 @@ Now you should be able to copy via ssh to the machine without password. Check th
 
 ## Ansible instructions
 
-I recommend this approach, as hopefully it'll setup your cluster automatically for you. There are a couple bits you'll need to configure initially but then the provided playbooks should setup the boards for you automatically. If you chose I hopefully have also included [the step-by-step manual instructions later in this tutorial](##Step-by-Step Cluster Instructions)
+I recommend this approach, as hopefully it'll setup your cluster automatically for you. There are a couple bits you'll need to configure initially but then the provided playbooks should setup the boards for you automatically. If you chose I hopefully have also included [the step-by-step manual instructions later in this tutorial](#step-by-step-cluster-instructions)
 
 I recommend setting up Ansible on your personal computer not the nodes; however, you could technically install it on one board and have it configure itself and the other board. Ansible in our use case will be going over SSH and running configuration steps for us automatically. If you have not setup SSH to work with SSH keys do this before moving on to this.
 
