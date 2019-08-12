@@ -76,7 +76,19 @@ $ ip a
 
 This is the full list of addresses on the system. What you should pay attention to is the device *eth0*, which in this case is the 3rd adapter listed. And in the output below that adpater you'll see a line that looks like this *link/ether 00:04:4b:e6:22:b6*, the key is the *00:04:4b:e6:22:b6*, which is the MAC address for this physical adapter. This is what we'll need to statically assign an ip to this board when it's wired in via it's gigabit ethernet adapter.
 
-2. Now update your router/network to statically assign each Jetson board its own unique static ip address. I recommend putting them close to each other as it'll make things easier. So with my example above I might assign each board 192.168.1.2 and 192.168.1.3, assuming nothing else needed those static addresses already on your network. For my specific network I'm now up in the 20s. 
+2. Now update your router/network to statically assign each Jetson board its own unique static ip address. I recommend putting them close to each other as it'll make things easier. So with my example above I might assign each board 192.168.1.2 and 192.168.1.3, assuming nothing else needed those static addresses already on your network. For my specific network I'm now up in the 20s. Record and keep track of these static addresses as you'll need them later.
+
+3. Once you've assigned the static address on your router, you'll need to refresh the lease on your Jetson board or restart your board so it asks for its new lease. I personally just restarted the machine, which you can always do with this command:
+
+```bash
+$ sudo reboot
+```
+
+But alternatively you may be able to restart the network controller as well with the following:
+
+```bash
+$ sudo service networking restart
+```
 
 
 ## Step-by-Step Cluster Instructions
