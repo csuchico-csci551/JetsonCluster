@@ -148,17 +148,17 @@ jetson_nano_worker
 ansible_ssh_user=<username> #Replace <username> with the actual user you want to run commands on the Jetson Board
 ```
 
-I gave the group of machines the name *jetson_nano*, which includes the children group for the primary and worker Jetson boards broken out. Replace your two boards in the inventory with the correct ip addresses. Additionally, in the last line there is the variable *ansible_ssh_user* to define what user you want the scripts to SSH into the board and run the commands as. 
+I gave the group of machines the name *jetson_nano*, which includes the children group for the primary and worker Jetson boards broken out. Replace your two boards in the inventory with the correct ip addresses. Additionally, in the last line there is the variable *ansible_ssh_user* to define what user you want the scripts to SSH into the board and run the commands as.
 
 Now check that your Ansible configuration works with your modified inventory file with the following that will ping all the nodes in your inventory:
 
 ```bash
 $ ansible all -m ping -i inventory
-192.168.1.2 | SUCCESS => {
+jn1 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-192.168.1.3 | SUCCESS => {
+jn2 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
