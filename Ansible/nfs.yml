@@ -1,0 +1,46 @@
+---
+- name: Install configure unified NFS Home mount
+  connection: ssh
+  gather_facts: "yes"
+  hosts: jetson_nano_primary
+  vars:
+    ip_address: "{{ ansible_default_ipv4.address }}/{{ ansible_default_ipv4.netmask }}"
+    subnet: "{{ ip_address | ipaddr('network/prefix') }}"
+  tasks:
+    - name: Install NFS server package
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - nfs-kernel-server
+    - name: Ensure exported directory /home is in /etc/exports
+      become: "yes"
+      lineinfile: dest=/etc/exports
+                  regexp="^/home\s"
+                  line='/home      {{subnet}}(rw,sync,no_root_squash,no_subtree_check)'
+      # notify: refresh exports
+    - name: Restart service nfs
+      become: "yes"
+      service:
+        name: nfs-kernel-server
+        state: restarted
+    - debug: var="{{ subnet }}"
+
+- name: Install configure unified NFS Home mount
+  connection: ssh
+  gather_facts: "yes"
+  hosts: jetson_nano_worker
+  vars:
+    primary_ip: "{{ hostvars['jn1']['ansible_default_ipv4']['address'] }}"
+  tasks:
+    # - name: Install NFS client package
+    #   become: "yes"
+    #   apt:
+    #     name: "{{ packages }}"
+    #     update_cache: "yes"
+    #   vars:
+    #     packages:
+    #     - nfs-common
+    - debug: var="{{ primary_ip }}"
