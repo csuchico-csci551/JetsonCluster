@@ -1,0 +1,39 @@
+---
+- name: Initial Updates and Package Installs
+  connection: ssh
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Update and upgrade apt packages
+      become: "yes"
+      apt:
+        upgrade: "yes"
+        update_cache: "yes"
+        # cache_valid_time: 86400 #One day
+
+    - name: Update, dist-upgrade, and autoremove apt packages
+      become: "yes"
+      apt:
+        upgrade: dist
+        update_cache: "yes"
+        autoremove: "yes"
+        # cache_valid_time: 86400 #One day
+
+    - name: Install a gcc build tools
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - build-essential
+
+    - name: Install a OpenMPI build tools
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - openmpi-bin
+        - libopenmpi-dev
