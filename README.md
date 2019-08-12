@@ -24,6 +24,8 @@ The first step would be to purchase a [NVIDIA Jetson Nano](https://developer.nvi
 
 Once you get your Jetson Nano board, follow the [Getting Started With Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit) instructions up through the *Setup and First Boot* step. At this point your Jetson Nano should have the OS installed with an initial user account. We now need to do a few more initial steps before we can use Ansible or move into the steps to build the cluster manually.
 
+* I would recommend setting the hostnames at this step, I named mine *jn1* and *jn2*.
+
 ### Create second user account (Optional)
 
 If you are working in a team, you should at this point setup an account for your partner who didn't create the initial user account in the last step. If you are working on your own you can skip this step.
@@ -90,11 +92,81 @@ But alternatively you may be able to restart the network controller as well with
 $ sudo service networking restart
 ```
 
+### SSH via SSH Keys to each boards
+
+
+
+
 
 ## Step-by-Step Cluster Instructions
 
 **TODO Add the steps**
 
 ## Ansible instructions
+
+I recommend this approach, as hopefully it'll setup your cluster automatically for you. There are a couple bits you'll need to configure initially but then the provided playbooks should setup the boards for you automatically. I recommend setting up Ansible on your personal computer not the nodes; however, you could technically install it on one board and have it configure itself and the other board. Ansible in our use case will be going over SSH and running configuration steps for us automatically. If you have not setup SSH to work with SSH keys do this before moving on to this.
+
+### Get Ansible installed
+
+Ansible is built on [Python](https://www.python.org/), I recommend using Python 3.6 or newer for this. As it can be installed via the Package Installer for Python or pip, to make life simpler, we'll want to use a Python virtual environment, which is a module that comes with Python 3.6 or newer now. To initially create a virtual environment do the following:
+
+```bash
+$ python3 -m venv venv
+```
+
+This will create a new folder where you run the command above, I recommend running this inside the Ansible folder of this repo after you've cloned it to your personal computer. Now run the following command to activate the virtual environment:
+
+```bash
+$ source venv/bin/activate
+(venv)$
+```
+
+Once the you've activated the python virtual environment you should see the name of it similarly to as shown above in parenthesis to indicate it's active. You can always use the command *deactivate* to exit the virtual environment. The benefit of the virtual environment is it will only install packages locally in that virtual environment so you can remove that folder and its gone from your system vs installing it on your system and then it's difficult to uninstall packages. Also useful if you want to use multiple versions of a given package on the same system. And with Python3 we can now just use the command python in the virtual environment we created with python3 since it is sim-linked accordingly while in the virtual environment.
+
+Now we can install Ansible in the virtual environment with the following:
+
+```bash
+$ pip install ansible
+```
+
+This will install ansible into the virtual environment you have currently active. Now we need to update your inventory to match your Jetson Nano boards ips on your network. I provided you an example inventory file called *inventory*, we will be manually running this inventory vs putting the config files into the system to have ansible run by default. Here is the contents of the example Ansible inventory file:
+
+```
+#Adjust these to your actual ips for each board.
+
+[jetson_nano_primary] #ip/Inventory for your primary Jetson board
+jn1 ansible_host=192.168.1.2 ansible_python_interpreter="/usr/bin/python3"
+
+[jetson_nano_worker] #ips/Inventory for your worker Jetson boards, if you have additional boards add them here.
+jn2 ansible_host=192.168.1.3 ansible_python_interpreter="/usr/bin/python3"
+
+[jetson_nano:children]
+jetson_nano_primary
+jetson_nano_worker
+
+[jetson_nano:vars]
+ansible_ssh_user=<username> #Replace <username> with the actual user you want to run commands on the Jetson Board
+```
+
+I gave the group of machines the name *jetson_nano*, which includes the children group for the primary and worker Jetson boards broken out. Replace your two boards in the inventory with the correct ip addresses. Additionally, in the last line there is the variable *ansible_ssh_user* to define what user you want the scripts to SSH into the board and run the commands as. 
+
+Now check that your Ansible configuration works with your modified inventory file with the following that will ping all the nodes in your inventory:
+
+```bash
+$ ansible all -m ping -i inventory
+192.168.1.2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+192.168.1.3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+```
+
+If your setup works, you should see something similar to the output of the command above. Now you can move on to running the playbooks.
+
+### Run Ansible Playbooks
+
 
 **TODO Add the Ansible playbooks and instructions**
