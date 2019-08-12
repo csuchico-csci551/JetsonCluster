@@ -94,6 +94,35 @@ $ sudo service networking restart
 
 ### SSH via SSH Keys to each boards
 
+If you already have ssh public/private keys, you can move on to the next step. If your id_rsa ssh keys, the default ones, are password protected, this will be a problem for use with Ansible. There is likely a way to use a secondary key so come see me in office hours if you need help here.
+
+Use the following command to create your ssh RSA public/private key pair:
+
+```bash
+$ ssh-keygen -t rsa -b 4096
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/bryan/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/bryan/.ssh/id_rsa.
+Your public key has been saved in /home/bryan/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:kFyU0PLIKO7efZdNj7rM4GLD6PdcBzDFkuMAyaiSkKc bryan@jn1
+The key's randomart image is:
++---[RSA 4096]----+
+| . o.o.+o+.      |
+|o o o.oo*..      |
+|.=   o+*oo       |
+|E . . o.oo       |
+|.. .    S .      |
+|  .        ..    |
+| .   o  . .+.o   |
+|  ....*o.=o.o .  |
+| ...oo.=+.=o     |
++----[SHA256]-----+
+```
+
+This will generate new ssh key, for example I ran this on one of my Jetson Boards for the above example. I recommend hitting enter for all of the prompts as the defaults and no passphrase is recommended for this application. Do not do this if you already have a SSH key pair. 
 
 
 
