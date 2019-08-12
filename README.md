@@ -144,16 +144,13 @@ and check to make sure that only the key(s) you wanted were added.
 $
 ```
 
-Now you should be able to copy via ssh to the machine without password. Check that this works before moving on for all of your Jetson Nano boards. 
-
-
-## Step-by-Step Cluster Instructions
-
-**TODO Add the steps**
+Now you should be able to copy via ssh to the machine without password. Check that this works before moving on for all of your Jetson Nano boards.
 
 ## Ansible instructions
 
-I recommend this approach, as hopefully it'll setup your cluster automatically for you. There are a couple bits you'll need to configure initially but then the provided playbooks should setup the boards for you automatically. I recommend setting up Ansible on your personal computer not the nodes; however, you could technically install it on one board and have it configure itself and the other board. Ansible in our use case will be going over SSH and running configuration steps for us automatically. If you have not setup SSH to work with SSH keys do this before moving on to this.
+I recommend this approach, as hopefully it'll setup your cluster automatically for you. There are a couple bits you'll need to configure initially but then the provided playbooks should setup the boards for you automatically. If you chose I hopefully have also included [the step-by-step manual instructions later in this tutorial](##Step-by-Step Cluster Instructions)
+
+I recommend setting up Ansible on your personal computer not the nodes; however, you could technically install it on one board and have it configure itself and the other board. Ansible in our use case will be going over SSH and running configuration steps for us automatically. If you have not setup SSH to work with SSH keys do this before moving on to this.
 
 ### Get Ansible installed
 
@@ -219,3 +216,7 @@ If your setup works, you should see something similar to the output of the comma
 
 
 **TODO Add the Ansible playbooks and instructions**
+
+## Step-by-Step Cluster Instructions
+
+**TODO Add the steps**
