@@ -1,5 +1,5 @@
 ---
-- name: Install configure unified NFS Home mount
+- name: Install configure unified NFS Home mount and SSH keys between nodes
   connection: ssh
   gather_facts: "yes"
   hosts: jetson_nano_primary
@@ -37,11 +37,7 @@
       register: ssh_keys
       tags:
         - ssh
-    # - name: check keys
-    #   debug: msg="{{ ssh_keys.stdout }}"
-    #   tags:
-    #     - ssh
-    - name: deploy keys on server
+    - name: add ssh keys to authorized keys
       authorized_key:
         user: '{{ansible_ssh_user}}'
         key: "{{ ssh_keys.stdout }}"
@@ -66,9 +62,11 @@
       vars:
         packages:
         - nfs-common
-    - name: Update /etc/fstab to have /home nfs mount
+    - name: Mount NFS home directory
       become: "yes"
-      lineinfile: dest=/etc/fstab
-                  regexp="^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:/home\s"
-                  line='{{ primary_ip }}:/home   /home  nfs    defaults    0 0'
-    - debug: var="{{ primary_ip }}"
+      mount:
+        path: /home
+        src: '{{ primary_ip }}:/home'
+        fstype: nfs
+        opts: defaults
+        state: mounted
