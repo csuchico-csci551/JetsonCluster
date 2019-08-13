@@ -229,15 +229,15 @@ Now that you have ansible installed and working with your inventory you can use 
   * **Optional Playbook**
   * Playbook to setup the /etc/hosts file so you can use the inventory names *jn1* and *jn2* or whatever you gave the nodes instead of ip addresses
   * You don't have to do this, but it's a simple way to use hostnames vs ips in your hostfiles, etc.
-  * You will need to make sure to ssh to each machine via the hostname in the /etc/hosts or inventory after this so that they're now in *known_hosts* for the system for MPI to work, which you have to do with the ips too. 
-* python.yml
+  * You will need to make sure to ssh to each machine via the hostname in the /etc/hosts or inventory after this so that they're now in *known_hosts* for the system for MPI to work, which you have to do with the ips too.
+* **python.yml**
   * **Optional Playbook**
   * If you choose this will setup the following for python3 system wide
     * pip3
     * Virtual Environments
     * OpenMPI bindings for python3
     * Numpy library for python3
-* rust.yml
+* **rust.yml**
   * **Optional Playbook** - *Still in progress*
   * If you choose this playbook will install Rust onto the Jetson Nano boards
   * This may be useful if you want to play with rust, including implementing the MPI assignments for extra credit in rust with the experimental MPI bindings.
