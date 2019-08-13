@@ -1,0 +1,37 @@
+---
+- name: Python Installs & Python MPI on system
+  connection: ssh
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Install a Python3 VENV and pip
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - python3-venv
+        - python3-pip
+    - name: Upgrade pip
+      become: "yes"
+      pip:
+        name: pip
+        extra_args: --upgrade
+        executable: pip3
+    - name: Upgrade wheel
+      become: "yes"
+      pip:
+        name: wheel
+        extra_args: --upgrade
+        executable: pip3
+    - name: Install MPI for Python Bindings
+      become: "yes"
+      pip:
+        name: mpi4py
+        executable: pip3
+    - name: Install Numpy
+      become: "yes"
+      pip:
+        name: numpy
+        executable: pip3
