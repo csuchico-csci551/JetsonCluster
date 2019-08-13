@@ -144,7 +144,7 @@ and check to make sure that only the key(s) you wanted were added.
 $
 ```
 
-Now you should be able to copy via ssh to the machine without password. Check that this works before moving on for all of your Jetson Nano boards.
+Now you should be able to connect via ssh to the machine without password. Check that this works before moving on for all of your Jetson Nano boards.
 
 ## Ansible instructions
 
@@ -169,13 +169,13 @@ $ source venv/bin/activate
 
 Once the you've activated the python virtual environment you should see the name of it similarly to as shown above in parenthesis to indicate it's active. You can always use the command *deactivate* to exit the virtual environment. The benefit of the virtual environment is it will only install packages locally in that virtual environment so you can remove that folder and its gone from your system vs installing it on your system and then it's difficult to uninstall packages. Also useful if you want to use multiple versions of a given package on the same system. And with Python3 we can now just use the command python in the virtual environment we created with python3 since it is sim-linked accordingly while in the virtual environment.
 
-Now we can install Ansible in the virtual environment with the following:
+Now we can install Ansible in the virtual environment with the following from the working directory of the Ansible folder in this repo:
 
 ```bash
-$ pip install ansible
+$ pip install -r requirements.txt
 ```
 
-This will install ansible into the virtual environment you have currently active. Now we need to update your inventory to match your Jetson Nano boards ips on your network. I provided you an example inventory file called *inventory*, we will be manually running this inventory vs putting the config files into the system to have ansible run by default. Here is the contents of the example Ansible inventory file:
+This will install ansible and any other requirements into the virtual environment you have currently active. Now we need to update your inventory to match your Jetson Nano boards ips on your network. I provided you an example inventory file called *inventory*, we will be manually running this inventory vs putting the config files into the system to have ansible run by default. Here is the contents of the example Ansible inventory file:
 
 ```
 #Adjust these to your actual ips for each board.
