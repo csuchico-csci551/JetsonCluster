@@ -3,6 +3,8 @@
   import_playbook: initial.yml
 - name: Include NFS setup playbook
   import_playbook: nfs.yml
+- name: Includes /etc/hosts setup playbook
+  import_playbook: hosts.yml
 - name: Include Python playbook
   import_playbook: python.yml
 - name: Include Linpack Prerequisites playbook

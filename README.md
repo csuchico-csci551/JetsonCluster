@@ -225,6 +225,11 @@ Now that you have ansible installed and working with your inventory you can use 
   * Creates an SSH public/private key pair for your ansible_ssh_user
   * Makes the ansible_ssh_user public key an authorized key for all the nodes
   * Mounts the NFS home share as the home folder for all the worker nodes
+* **hosts.yml**
+  * **Optional Playbook**
+  * Playbook to setup the /etc/hosts file so you can use the inventory names *jn1* and *jn2* or whatever you gave the nodes instead of ip addresses
+  * You don't have to do this, but it's a simple way to use hostnames vs ips in your hostfiles, etc.
+  * You will need to make sure to ssh to each machine via the hostname in the /etc/hosts or inventory after this so that they're now in *known_hosts* for the system for MPI to work, which you have to do with the ips too. 
 * python.yml
   * **Optional Playbook**
   * If you choose this will setup the following for python3 system wide
