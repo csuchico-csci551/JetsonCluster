@@ -250,9 +250,11 @@ For example to run the *all* playbook that would run all of the playbooks for yo
 $ ansible-playbook -i inventory --ask-become-pass all.yml
 ```
 
-**Note:** the *--ask-become-pass* option will prompt you for the sudo password for the *ansible_ssh_user* on the Jetson Nano boards. This is to prevent you from hardcoding this somewhere, but provide privileges to the Ansible scripts to do all the installs. 
+**Note:** the *--ask-become-pass* option will prompt you for the sudo password for the *ansible_ssh_user* on the Jetson Nano boards. This is to prevent you from hardcoding this somewhere, but provide privileges to the Ansible scripts to do all the installs.
 
 ## Step-by-Step Cluster Instructions
+
+If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first.
 
 **TODO Add the steps**
 
