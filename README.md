@@ -250,6 +250,8 @@ For example to run the *all* playbook that would run all of the playbooks for yo
 $ ansible-playbook -i inventory --ask-become-pass all.yml
 ```
 
+**Note:** the *--ask-become-pass* option will prompt you for the sudo password for the *ansible_ssh_user* on the Jetson Nano boards. This is to prevent you from hardcoding this somewhere, but provide privileges to the Ansible scripts to do all the installs. 
+
 ## Step-by-Step Cluster Instructions
 
 **TODO Add the steps**
@@ -436,4 +438,4 @@ End of Tests.
 ================================================================================
 ```
 
-The relevant output you should care the most about is the "Gflops" column. This tells you the theoretical maximum HPL measured on your system. For comparison, to even get onto the Top 500 list, you now have to get into the Pflops values. 
+The relevant output you should care the most about is the "Gflops" column. This tells you the theoretical maximum HPL measured on your system. For comparison, to even get onto the Top 500 list, you now have to get into the Pflops values.
