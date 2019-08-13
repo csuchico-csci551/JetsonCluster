@@ -26,6 +26,29 @@
       service:
         name: nfs-kernel-server
         state: restarted
+    - name: Create a 4096-bit SSH key for user '{{ansible_ssh_user}}' in ~'{{ansible_ssh_user}}'/.ssh/id_rsa
+      user:
+        name: '{{ansible_ssh_user}}'
+        generate_ssh_key: yes
+        ssh_key_bits: 4096
+        ssh_key_file: .ssh/id_rsa
+    - name: export public ssh key
+      shell: cat ~/.ssh/id_rsa.pub
+      register: ssh_keys
+      tags:
+        - ssh
+    # - name: check keys
+    #   debug: msg="{{ ssh_keys.stdout }}"
+    #   tags:
+    #     - ssh
+    - name: deploy keys on server
+      authorized_key:
+        user: '{{ansible_ssh_user}}'
+        key: "{{ ssh_keys.stdout }}"
+        state: present
+      tags:
+        - ssh
+
     - debug: var="{{ subnet }}"
 
 - name: Install configure unified NFS Home mount
@@ -43,4 +66,9 @@
       vars:
         packages:
         - nfs-common
+    - name: Update /etc/fstab to have /home nfs mount
+      become: "yes"
+      lineinfile: dest=/etc/fstab
+                  regexp="^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:/home\s"
+                  line='{{ primary_ip }}:/home   /home  nfs    defaults    0 0'
     - debug: var="{{ primary_ip }}"
