@@ -28,7 +28,7 @@
         packages:
         - build-essential
 
-    - name: Install a OpenMPI build tools
+    - name: Install a OpenMPI build tools and helper libraries
       become: "yes"
       apt:
         name: "{{ packages }}"
@@ -37,3 +37,5 @@
         packages:
         - openmpi-bin
         - libopenmpi-dev
+        - libblas-dev
+        - gfortran
