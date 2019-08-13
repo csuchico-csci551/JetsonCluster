@@ -5,3 +5,7 @@
   import_playbook: nfs.yml
 - name: Include Python playbook
   import_playbook: python.yml
+- name: Include Linpack Prerequisites playbook
+  import_playbook: linpack.yml
+- name: Include Rust Install playbook
+  import_playbook: rust.yml

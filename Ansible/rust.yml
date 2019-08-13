@@ -1,0 +1,16 @@
+---
+## Due to a limitation, only installing Rust on priamary board
+## This is due to Rust's install updating PATH/local variables in your home directory
+## Executable will work as long as shared accross boards just can only compile/build on primary board.
+- name: Install Rust/Cargo on Primary Board
+  connection: ssh
+  gather_facts: "no"
+  hosts: jetson_nano_primary
+  tasks:
+    - name: Download rustup.rs shell script
+      become: "yes"
+      get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp
+    - name: Install Rust via Official Rust Install Shell Script
+      shell: cat /tmp/rustup-init.sh | sh -s -- -y
