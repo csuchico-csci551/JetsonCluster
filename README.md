@@ -238,7 +238,8 @@ Now that you have ansible installed and working with your inventory you can use 
     * OpenMPI bindings for python3
     * Numpy library for python3
 * **rust.yml**
-  * **Optional Playbook** - *Still in progress*
+  * **Optional Playbook**
+  * **Caveat** - This works but only installs Rust onto the primary Jetson Nano board, so all compilation and development will need to happen there for Rust. This is likely what you will want to do regardless but due to the way Rust adds itself to the path and into your home directory it wasn't trivial to install on all the nodes with the shared home folder. If I'm able to resolve this in the future will update but for now this will work. 
   * If you choose this playbook will install Rust onto the Jetson Nano boards
   * This may be useful if you want to play with rust, including implementing the MPI assignments for extra credit in rust with the experimental MPI bindings.
 
