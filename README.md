@@ -253,3 +253,187 @@ $ ansible-playbook -i inventory --ask-become-pass all.yml
 ## Step-by-Step Cluster Instructions
 
 **TODO Add the steps**
+
+## Linpack Benchmarks
+
+Now that you have a functioning cluster, you should benchmark it so that you can see how you stack against the [top 500 supercomputer list](https://www.top500.org/). To do this you'll need to compile and run the High Performance Linpack (HPL) benchmark.
+
+### Steps
+* On the primary node, login as your **regular user.**
+* Download and extract the HPL tarball.
+
+```bash
+~$ wget https://www.netlib.org/benchmark/hpl/hpl-2.3.tar.gz
+~$ tar -zxvf hpl-2.3.tar.gz
+```
+* Prep a makefile for your system.
+```bash
+~$ cd hpl-2.3
+~/hpl-2.3/$ cp setup/Make.Linux_PII_CBLAS Make.Linux
+```
+
+* Edit your *Make.Linux* file to have the correct install locations
+
+```Makefile
+#### edit only the following lines, leave everything else the same: ####
+ARCH         = Linux
+TOPdir       = $(HOME)/hpl-2.3
+MPdir        = /usr/lib/aarch64-linux-gnu/openmpi
+MPinc        = -I$(MPdir)/include
+MPlib        = $(MPdir)/lib/libmpi.so
+LAdir        = /usr/lib/aarch64-linux-gnu/blas
+LAlib        = $(LAdir)/libblas.so
+LINKER       = /usr/bin/gfortran
+```
+
+* Edit the *Makefile* to point to your arch file by changing one line:
+
+```Makefile
+arch = Linux
+```
+
+* Compile HPL
+
+```bash
+~/hpl-2.3/$ make arch=Linux
+```
+
+  * If all goes well this should complete within a minute
+  * The binary it installs is called *xhpl* and it should be in the *hpl-2.3/bin/Linux*
+  * If you see failures, **read them carefully** likely you made a typo in your Makefile. Also make sure your ansible or setup instructions completed correctly.
+
+### Run HPL on your Cluster
+
+In order to run HPL you will need to edit a file called HPL.dat to match your system setup. We will be running HPL at a very small scale to save time as a fully optimized HPL could take a very very long time to complete. Running this small scale HPL took me 1.5 hours to complete as an example. I'm making the assumption you are running this on 2 Jetson Nano boards, if you are using more/different boards you'll have to figure out the details for the configurations yourself or come see me for help.
+
+```bash
+$ cd $HOME/hpl-2.3/bin/Linux
+Linux$ ls
+HPL.dat xhpl
+```
+
+Create a hostfile in this directory so for your 2 node Jetson Nano cluster your file should look like this:
+
+```
+192.168.1.2 slots=4
+192.168.1.3 slots=4
+```
+
+Your ips may differ depending on your network setup, but should reflect the *jn1* and *jn2* boards. Alternatively, and this may be added in the future you could use the hostnames as defined in your /etc/hosts file.
+
+Now edit your HPL.dat to look **exactly** like the following:
+
+```
+HPLinpack benchmark input file
+Innovative Computing Laboratory, University of Tennessee
+HPL.out      output file name (if any)
+6            device out (6=stdout,7=stderr,file)
+1            # of problems sizes (N)
+29304         Ns
+1            # of NBs
+4           NBs
+0            PMAP process mapping (0=Row-,1=Column-major)
+1            # of process grids (P x Q)
+2            Ps
+4            Qs
+16.0         threshold
+1            # of panel fact
+2            PFACTs (0=left, 1=Crout, 2=Right)
+1            # of recursive stopping criterium
+4            NBMINs (>= 1)
+1            # of panels in recursion
+2            NDIVs
+1            # of recursive panel fact.
+1            RFACTs (0=left, 1=Crout, 2=Right)
+1            # of broadcast
+1            BCASTs (0=1rg,1=1rM,2=2rg,3=2rM,4=Lng,5=LnM)
+1            # of lookahead depth
+1            DEPTHs (>=0)
+2            SWAP (0=bin-exch,1=long,2=mix)
+64           swapping threshold
+0            L1 in (0=transposed,1=no-transposed) form
+0            U  in (0=transposed,1=no-transposed) form
+1            Equilibration (0=no,1=yes)
+8            memory alignment in double (> 0)
+##### This line (no. 32) is ignored (it serves as a separator). ######
+0                               Number of additional problem sizes for PTRANS
+1200 10000 30000                values of N
+0                               number of additional blocking sizes for PTRANS
+40 9 8 13 13 20 16 32 64        values of NB
+```
+
+Now you can run HPL!! You can do so with the following from the folder with your configuration files and xhpl executable:
+
+```bash
+$ mpirun -n 8 --hostfile hostfile ./xhpl
+```
+
+The run will likely take quite a long time but you will see some output that looks like the following:
+
+```
+================================================================================
+HPLinpack 2.3  --  High-Performance Linpack benchmark  --   December 2, 2018
+Written by A. Petitet and R. Clint Whaley,  Innovative Computing Laboratory, UTK
+Modified by Piotr Luszczek, Innovative Computing Laboratory, UTK
+Modified by Julien Langou, University of Colorado Denver
+================================================================================
+
+An explanation of the input/output parameters follows:
+T/V    : Wall time / encoded variant.
+N      : The order of the coefficient matrix A.
+NB     : The partitioning blocking factor.
+P      : The number of process rows.
+Q      : The number of process columns.
+Time   : Time in seconds to solve the linear system.
+Gflops : Rate of execution for solving the linear system.
+
+The following parameter values will be used:
+
+N      :   29304
+NB     :       4
+PMAP   : Row-major process mapping
+P      :       2
+Q      :       4
+PFACT  :   Right
+NBMIN  :       4
+NDIV   :       2
+RFACT  :   Crout
+BCAST  :  1ringM
+DEPTH  :       1
+SWAP   : Mix (threshold = 64)
+L1     : transposed form
+U      : transposed form
+EQUIL  : yes
+ALIGN  : 8 double precision words
+
+--------------------------------------------------------------------------------
+
+- The matrix A is randomly generated for each test.
+- The following scaled residual check will be computed:
+      ||Ax-b||_oo / ( eps * ( || x ||_oo * || A ||_oo + || b ||_oo ) * N )
+- The relative machine precision (eps) is taken to be               1.110223e-16
+- Computational tests pass if scaled residuals are less than                16.0
+
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR11C2R4       29304     4     2     4            6160.86             2.7232e+00
+HPL_pdgesv() start time Tue Aug 13 11:02:04 2019
+
+HPL_pdgesv() end time   Tue Aug 13 12:44:45 2019
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   3.73306719e-03 ...... PASSED
+================================================================================
+
+Finished      1 tests with the following results:
+              1 tests completed and passed residual checks,
+              0 tests completed and failed residual checks,
+              0 tests skipped because of illegal input values.
+--------------------------------------------------------------------------------
+
+End of Tests.
+================================================================================
+```
+
+The relevant output you should care the most about is the "Gflops" column. This tells you the theoretical maximum HPL measured on your system. For comparison, to even get onto the Top 500 list, you now have to get into the Pflops values. 
