@@ -214,8 +214,41 @@ If your setup works, you should see something similar to the output of the comma
 
 ### Run Ansible Playbooks
 
+Now that you have ansible installed and working with your inventory you can use the playbooks to setup/configure your Jetson Nano boards to work as a cluster or for development. You can run the playbooks in the following order or just run playbook all to install everything.
 
-**TODO Add the Ansible playbooks and instructions**
+* **initial.yml**
+  * Playbook to install updates/upgrade system to started
+  * Installs GCC/G++/OpemMPI development tools
+  * Installs BLAS libraries
+* **nfs.yml**
+  * Playbook to setup NFS and share the home folder from the primary node
+  * Creates an SSH public/private key pair for your ansible_ssh_user
+  * Makes the ansible_ssh_user public key an authorized key for all the nodes
+  * Mounts the NFS home share as the home folder for all the worker nodes
+* python.yml
+  * **Optional Playbook**
+  * If you choose this will setup the following for python3 system wide
+    * pip3
+    * Virtual Environments
+    * OpenMPI bindings for python3
+    * Numpy library for python3
+* rust.yml
+  * **Optional Playbook** - *Still in progress*
+  * If you choose this playbook will install Rust onto the Jetson Nano boards
+  * This may be useful if you want to play with rust, including implementing the MPI assignments for extra credit in rust with the experimental MPI bindings.
+
+You can run any of the playbooks with the following command structure:
+
+```bash
+#replace <playbook file> with the actual ansible playbook to run
+$ ansible-playbook -i inventory --ask-become-pass <playbook file>
+```
+
+For example to run the *all* playbook that would run all of the playbooks for you in one command you can do the following:
+
+```bash
+$ ansible-playbook -i inventory --ask-become-pass all.yml
+```
 
 ## Step-by-Step Cluster Instructions
 
