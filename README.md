@@ -237,6 +237,14 @@ Now that you have ansible installed and working with your inventory you can use 
     * Virtual Environments
     * OpenMPI bindings for python3
     * Numpy library for python3
+* **spark.yml**
+  * **Optional Playbook**
+  * If you install Apache Spark, you should install the Python playbook first. 
+  * If you choose this will setup the following
+    * OpenJDK8
+    * Apache Spark
+    * .bashrc bindings for Spark for ansible_ssh_user
+    * Start the master/workers for Spark
 * **rust.yml**
   * **Optional Playbook**
   * **Caveat** - This works but only installs Rust onto the primary Jetson Nano board, so all compilation and development will need to happen there for Rust. This is likely what you will want to do regardless but due to the way Rust adds itself to the path and into your home directory it wasn't trivial to install on all the nodes with the shared home folder. If I'm able to resolve this in the future will update but for now this will work.
@@ -246,7 +254,7 @@ Now that you have ansible installed and working with your inventory you can use 
   * **Optional Playbook**
   * If you choose, this will install Clang 7 onto your cluster
   * Clang is a llvm compiler and may provide a lot of novel compiler features that GCC doesn't by default.
-  * This playbook isn't included in the *all* playbook, as its not necessary and the OpenMP included with clang is OpenMP 3.1 instead of OpenMP 4.5 that comes with GCC 
+  * This playbook isn't included in the *all* playbook, as its not necessary and the OpenMP included with clang is OpenMP 3.1 instead of OpenMP 4.5 that comes with GCC
 
 You can run any of the playbooks with the following command structure:
 

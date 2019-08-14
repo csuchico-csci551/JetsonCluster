@@ -1,0 +1,104 @@
+---
+- name: Install Apache Spark on Jetson Boards
+  connection: ssh
+  gather_facts: "yes"
+  hosts: jetson_nano
+  tasks:
+    - name: Update and upgrade apt packages
+      become: "yes"
+      apt:
+        upgrade: "yes"
+        update_cache: "yes"
+        # cache_valid_time: 86400 #One day
+    ## JDK11 causes issues w/ Spark
+    - name: Uninstall default JDK/OpenJDK11
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+        state: absent
+      vars:
+        packages:
+        - default-jdk
+        - openjdk-11-jre
+        - openjdk-11-jre-headless
+    - name: Install OpenJDK 8
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+        state: present
+      vars:
+        packages:
+        - openjdk-8-jdk
+    - name: Download Spark Code
+      become: "yes"
+      get_url:
+        url: http://apache.mirrors.hoobly.com/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
+        dest: /tmp
+        # checksum: "sha512:https://www.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz.sha512"
+    - name: Unarchive spark archive to /tmp folder
+      unarchive:
+        src: /tmp/spark-2.4.3-bin-hadoop2.7.tgz
+        dest: /tmp
+        remote_src: yes
+    - name: Remove Existing Spark Install in /opt/spark
+      become: "yes"
+      file:
+        state: absent
+        path: /opt/spark
+    - name: Move spark folder in tmp to /opt/spark
+      become: "yes"
+      command: mv /tmp/spark-2.4.3-bin-hadoop2.7 /opt/spark
+    - name: Ensure export of Apache Spark Home environment variable is in .bashrc for ansible_ssh_user
+      # become: "yes"
+      lineinfile:
+        dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+        line: 'export SPARK_HOME=/opt/spark'
+        # regexp="^export SPARK_HOME\s"
+    - name: Ensure export of Apache Spark Home environment variable is in .bashrc for ansible_ssh_user
+      # become: "yes"
+      lineinfile:
+        dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+        # regexp="^export PATH=$PATH:$SPARK_HOME\s"
+        line: 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin'
+    - name: Remove Spark Archive
+      become: "yes"
+      file:
+        state: absent
+        path: /tmp/spark-2.4.3-bin-hadoop2.7.tgz
+
+- name: Configure Apache Spark Server on primary Jetson Board
+  connection: ssh
+  gather_facts: "yes"
+  hosts: jetson_nano_primary
+  # vars:
+  #   ip_address: "{{ ansible_default_ipv4.address }}/{{ ansible_default_ipv4.netmask }}"
+  #   subnet: "{{ ip_address | ipaddr('network/prefix') }}"
+  environment:
+    # SPARK_HOME: /opt/spark
+    PATH: "{{ ansible_env.PATH }}:/opt/spark/bin:/opt/spark/sbin"
+  tasks:
+    - name: Stop any already running standalone master server
+      shell: stop-master.sh
+    # - debug: var="{{ ansible_env.PATH }}"
+    - name: Start a standalone master server
+      shell: start-master.sh
+
+#
+#
+- name: Configure Apache Spark Workers
+  connection: ssh
+  gather_facts: "yes"
+  hosts: jetson_nano
+  vars:
+    primary_ip: "{{ hostvars['jn1']['ansible_default_ipv4']['address'] }}"
+  environment:
+    # SPARK_HOME: /opt/spark
+    PATH: "{{ ansible_env.PATH }}:/opt/spark/bin:/opt/spark/sbin"
+  tasks:
+    - name: Stop already running worker
+      shell: stop-slave.sh
+    # - debug: var="{{ ansible_env.PATH }}"
+    - name: Start worker to connect to master server on primary node
+      shell: "start-slave.sh spark://{{ primary_ip }}:7077"

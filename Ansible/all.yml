@@ -9,3 +9,5 @@
   import_playbook: python.yml
 - name: Include Rust Install playbook
   import_playbook: rust.yml
+- name: Include Spark Install playbook
+  import_playbook: spark.yml
