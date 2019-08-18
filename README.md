@@ -272,6 +272,23 @@ $ ansible-playbook -i inventory --ask-become-pass all.yml
 
 **Note:** the *--ask-become-pass* option will prompt you for the sudo password for the *ansible_ssh_user* on the Jetson Nano boards. This is to prevent you from hardcoding this somewhere, but provide privileges to the Ansible scripts to do all the installs.
 
+### MPI Run Issues
+
+There is a chance that you may get an odd error that looks like the following when you try to run MPI tasks:
+
+```bash
+[jn1][[39096,1],0][btl_tcp_endpoint.c:649:mca_btl_tcp_endpoint_recv_connect_ack] received unexpected process identifier [[39096,1],2]
+```
+
+If this is the case you'll want specify the tcp interface that communication occurs over in the mpirun command as follows:
+
+```bash
+$ mpirun --mca btl_tcp_if_include eth0 <rest of mpirun command
+```
+
+I ran into this on one of the cluster builds after the Ansible playbook ran but not another. Everything still works, just requires a bit more information specified from you as the user to run MPI. 
+
+
 ## Step-by-Step Cluster Instructions
 
 If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first.
