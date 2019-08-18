@@ -105,3 +105,15 @@
       vars:
         packages:
         - libomp-7-dev
+
+- name: Export LLVM_CONFIG on Primary Node's bashrc for ansible_ssh_user
+  connection: ssh
+  gather_facts: "no"
+  hosts: jetson_nano_primary
+  tasks:
+    - name: Ensure export of llvm-config PATH
+      # become: "yes"
+      lineinfile:
+        dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+        # regexp="^export PATH=$PATH:$SPARK_HOME\s"
+        line: 'export LLVM_CONFIG=/usr/bin/llvm-config-7'
