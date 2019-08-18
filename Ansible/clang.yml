@@ -1,5 +1,6 @@
 ---
 # Adapted from playbook found here and clang docs: https://github.com/loderunner/ansible-clang
+# Clang apt install info here: https://apt.llvm.org/
 - name: Install Clang LLVM compiler
   connection: ssh
   gather_facts: false
