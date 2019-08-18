@@ -291,7 +291,7 @@ I ran into this on one of the cluster builds after the Ansible playbook ran but 
 
 ## Step-by-Step Cluster Instructions
 
-If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first.
+If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first. I highly recommend you use the [Ansible instructions](#ansible-instructions)
 
 **TODO Add the steps**
 
