@@ -291,7 +291,9 @@ I ran into this on one of the cluster builds after the Ansible playbook ran but 
 
 ## Step-by-Step Cluster Instructions
 
-If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first. I highly recommend you use the [Ansible playbook approach](#ansible-instructions), as it makes things easier for you and has been tested/validated against a fresh set of Jetson boards after they were built that it works. I'm going to high level give you the step by step instructions here but there may be some level of familiarity with basic Ubuntu system administration needed and I may forget some steps. I'm also not testing that all the steps are included here.
+I highly recommend you use the [Ansible playbook approach](#ansible-instructions), as it makes things easier for you and has been tested/validated against a fresh set of Jetson boards after they were built that it works. I'm going to high level give you the step by step instructions here but there may be some level of familiarity with basic Ubuntu system administration needed and I may forget some steps. I'm also not testing that all the steps are included here.
+
+There are also packages/steps not included as this will only give you the steps for basic C/C++ MPI w/ a unified home directory vs the more comprehensive/complete setup with the Ansible Playbooks. 
 
 ### Update your machines
 
