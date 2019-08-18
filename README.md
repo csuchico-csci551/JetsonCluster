@@ -254,8 +254,8 @@ Now that you have ansible installed and working with your inventory you can use 
 * **clang.yml**
   * **Optional Playbook**
   * If you choose, this will install Clang 7 onto your cluster
-  * Clang is a llvm compiler and may provide a lot of novel compiler features that GCC doesn't by default.
-  * This playbook isn't included in the *all* playbook, as its not necessary and the OpenMP included with clang is OpenMP 3.1 instead of OpenMP 4.5 that comes with GCC
+  * Clang is a llvm compiler and may provide a lot of novel compiler features that GCC does not by default.
+  * Clang is necessary for Rust.
 
 You can run any of the playbooks with the following command structure:
 
@@ -293,7 +293,7 @@ I ran into this on one of the cluster builds after the Ansible playbook ran but 
 
 I highly recommend you use the [Ansible playbook approach](#ansible-instructions), as it makes things easier for you and has been tested/validated against a fresh set of Jetson boards after they were built that it works. I'm going to high level give you the step by step instructions here but there may be some level of familiarity with basic Ubuntu system administration needed and I may forget some steps. I'm also not testing that all the steps are included here.
 
-There are also packages/steps not included as this will only give you the steps for basic C/C++ MPI w/ a unified home directory vs the more comprehensive/complete setup with the Ansible Playbooks. 
+There are also packages/steps not included as this will only give you the steps for basic C/C++ MPI w/ a unified home directory vs the more comprehensive/complete setup with the Ansible Playbooks.
 
 ### Update your machines
 
@@ -395,7 +395,7 @@ So for our basic MPI Jetson cluster this is all we need to do. Assuming the foll
 * Unified home directory
   * You could alternatively have a secondary folder that is at the same path on all the nodes where you put and run your code, but it's easiest to have this be your home directory. This is necessary for MPI.
 
-I'm not going to include step-by-step for the other steps in the Ansible playbooks to get Python3 MPI bindings system wide, Rust, Apache Spark, etc installed. Either figure out how to do that on your own, figure out what the Ansible playbooks do and do it manually, or just use the playbooks. 
+I'm not going to include step-by-step for the other steps in the Ansible playbooks to get Python3 MPI bindings system wide, Rust, Apache Spark, etc installed. Either figure out how to do that on your own, figure out what the Ansible playbooks do and do it manually, or just use the playbooks.
 
 ## Linpack Benchmarks
 

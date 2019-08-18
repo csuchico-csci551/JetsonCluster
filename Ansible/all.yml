@@ -9,5 +9,8 @@
   import_playbook: python.yml
 - name: Include Rust Install playbook
   import_playbook: rust.yml
+## Seems clang is needed for Rust
+- name: Include Clang Install playbook
+  import_playbook: clang.yml
 - name: Include Spark Install playbook
   import_playbook: spark.yml

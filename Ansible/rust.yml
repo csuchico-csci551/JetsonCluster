@@ -14,3 +14,11 @@
         dest: /tmp
     - name: Install Rust via Official Rust Install Shell Script
       shell: cat /tmp/rustup-init.sh | sh -s -- -y
+    - name: Install TextInfo package for structured compile info from Rust
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - texinfo
