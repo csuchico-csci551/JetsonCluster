@@ -14,6 +14,7 @@ The first step would be to purchase a [NVIDIA Jetson Nano](https://developer.nvi
 * Power Supplies - The board doesn't come with a power supply and can take both a micro-USB or a barrel connector power supply.
   * [Heyday USB Wall Charger](https://www.target.com/p/heyday-153-usb-wall-charger/-/A-53454899) - Found this at Target for $4.99, since I have multiple USB-A to micro-USB cables and this supports 5V/2.3A it can adequately power the Jetson board.
   * [Adafruit Power Supply](https://www.adafruit.com/product/1995) - This is the recommended Micro USB supply that NVIDIA lists.
+  * [CanaKit Raspberry Pi Power Supply](https://smile.amazon.com/CanaKit-Raspberry-Supply-Adapter-Listed/dp/B00MARDJZ4) - This is als a 5V/2.5A RPi Supply like the Adafruit one and should work for the Jetson boards. It's on Amazon for $9.99 with free shipping. 
   * [Blog about Barrel Connector](https://desertbot.io/blog/jetson-nano-power-supply-barrel-vs-micro-usb) - There is a discussion here about why you would want a barrel connector and the fact you can get 5V/4A... this might be highly recommended if you are going to keep a monitor, keyboard, mouse connected and get a fan powered by the board.
 * Optional Case - There are a few cases for the boards on Amazon, a few come with active cooling fans, which might be useful especially if you are going to move/carry the boards around or need active cooling.
 * Optional Switch - Depending on your home network, you may need additional wired connections for the Jetson Nano board. I recommend getting an inexpensive gigabit switch for this. You optionally could run your own network off or your laptop through the switch if you don't have access to your router or want to use the boards on campus too. You want gigabit as that is the max the boards support and likely will be a limiting factor in our MPI applications on this cluster regardless.
@@ -270,6 +271,23 @@ $ ansible-playbook -i inventory --ask-become-pass all.yml
 ```
 
 **Note:** the *--ask-become-pass* option will prompt you for the sudo password for the *ansible_ssh_user* on the Jetson Nano boards. This is to prevent you from hardcoding this somewhere, but provide privileges to the Ansible scripts to do all the installs.
+
+### MPI Run Issues
+
+There is a chance that you may get an odd error that looks like the following when you try to run MPI tasks:
+
+```bash
+[jn1][[39096,1],0][btl_tcp_endpoint.c:649:mca_btl_tcp_endpoint_recv_connect_ack] received unexpected process identifier [[39096,1],2]
+```
+
+If this is the case you'll want specify the tcp interface that communication occurs over in the mpirun command as follows:
+
+```bash
+$ mpirun --mca btl_tcp_if_include eth0 <rest of mpirun command>
+```
+
+I ran into this on one of the cluster builds after the Ansible playbook ran but not another. Everything still works, just requires a bit more information specified from you as the user to run MPI. 
+
 
 ## Step-by-Step Cluster Instructions
 
