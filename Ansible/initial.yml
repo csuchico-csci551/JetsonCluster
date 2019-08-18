@@ -39,3 +39,14 @@
         - libopenmpi-dev
         - libblas-dev
         - gfortran
+    - name: Ensure export of CUDA LD_LIBRARY_PATH
+      # become: "yes"
+      lineinfile:
+        dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+        line: 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64'
+    - name: Ensure export of CUDA PATH
+      # become: "yes"
+      lineinfile:
+        dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+        # regexp="^export PATH=$PATH:$SPARK_HOME\s"
+        line: 'export PATH=$PATH:/usr/local/cuda-10.0/bin/'
