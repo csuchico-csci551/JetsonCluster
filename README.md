@@ -308,6 +308,8 @@ $ sudo apt autoremove
 
 Now that you have them fully updated the boards, create a SSH public/private key (like you did earlier) for the primary Jetson board. Copy this SSH key identity to itself and the worker Jetson boards and test that you can ssh into jn1, jn2, etc without passwords once completed. This is necessary both for OpenMPI in the future, but we'll be able to use a nifty distributed shell tool to speed up the rest of the steps if we can do this as well.
 
+We eventually will have the home folders on jn1 shared as the home folder for all the other nodes. You'll want to make the ssh key on jn1 an authorized key for itself. You can do that via the ssh_copy_id command or just use cat to append the public key into a file called authorized_keys in the hidden .ssh folder in your user's home directory.
+
 ### Install PDSH
 
 Install [pdsh](https://github.com/chaos/pdsh) onto your machines, it's in the Ubuntu package manager so it's reasonably easy:
@@ -328,8 +330,70 @@ Now we can run one command to run multiple commands across all our nodes. The fo
 $ pdsh -w 192.168.1.[2-3] echo "Hello World"
 ```
 
+pdsh won't be as useful unless you disable prompting for password for users in the sudoers file, which I don't recommend. The reason for this is Ubuntu doesn't have a root user, so we can't connect to a list of hosts with pdsh as root to run install commands.
 
+### Install build tools
 
+Now we want to install all the build tools so install the following packages via the apt package manager.
+
+* build-essential
+* openmpi-bin
+* libopenmpi-dev
+* libblas-dev
+* gfortran
+
+### Setup /etc/hosts file
+
+So that you don't need to use ip addresses on your Jetson boards, you will want to write the following into your /etc/hosts file to match your network topology:
+
+```
+jn1 192.168.1.2
+jn2 192.168.1.3
+```
+
+Now you can just use the hostname jn1 or jn2 to ssh into each of the Jetson boards or in your hostfile for MPI.
+
+### NFS Mounts
+
+Install the nfs-kernel-server package on your primary node. This is the NFS server package for Ubuntu. On your worker nodes install the nfs-common package that will allow them to be NFS clients.
+
+#### Primary
+
+On the primary nodes you'll want to add the following line to the */etc/exports/* file:
+
+```
+/home      192.168.1.0/24(rw,sync,no_root_squash,no_subtree_check)
+```
+
+Once you've added the folder to the list of exported folders on the primary node's NFS Server, restart the NFS service on the primary node.
+
+#### Workers
+
+On your worker node add the following line to */etc/fstab* so that we can mount the NFS share on the primary node and that this mount will persist even if we reboot the nodes:
+
+```
+192.168.1.2:/home /home nfs defaults 0 0
+```
+
+This assumes that the ip of your primary node is 192.168.1.2 alternatively if you setup the /etc/hosts you could have used jn1 instead there.
+
+With that line in our */etc/fstab* file we can now have the system automatically mount everything in the */etc/fstab* file for us.
+
+```bash
+$ sudo mount -a
+```
+
+Assuming this works, you should be about to touch or create a new file in your home directory on one machine and see it on all of them.
+
+### Basics Done
+
+So for our basic MPI Jetson cluster this is all we need to do. Assuming the following works we can use C/C++ MPI programs on our cluster:
+
+* SSH into each node from itself and the other nodes without prompts/passwords
+* Unified home directory
+  * You could alternatively have a secondary folder that is at the same path on all the nodes where you put and run your code, but it's easiest to have this be your home directory. This is necessary for MPI.
+
+I'm not going to include step-by-step for the other steps in the Ansible playbooks to get Python3 MPI bindings system wide, Rust, Apache Spark, etc installed. Either figure out how to do that on your own, figure out what the Ansible playbooks do and do it manually, or just use the playbooks. 
 
 ## Linpack Benchmarks
 
