@@ -283,7 +283,7 @@ There is a chance that you may get an odd error that looks like the following wh
 If this is the case you'll want specify the tcp interface that communication occurs over in the mpirun command as follows:
 
 ```bash
-$ mpirun --mca btl_tcp_if_include eth0 <rest of mpirun command
+$ mpirun --mca btl_tcp_if_include eth0 <rest of mpirun command>
 ```
 
 I ran into this on one of the cluster builds after the Ansible playbook ran but not another. Everything still works, just requires a bit more information specified from you as the user to run MPI. 
