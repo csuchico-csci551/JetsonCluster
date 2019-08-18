@@ -14,7 +14,7 @@ The first step would be to purchase a [NVIDIA Jetson Nano](https://developer.nvi
 * Power Supplies - The board doesn't come with a power supply and can take both a micro-USB or a barrel connector power supply.
   * [Heyday USB Wall Charger](https://www.target.com/p/heyday-153-usb-wall-charger/-/A-53454899) - Found this at Target for $4.99, since I have multiple USB-A to micro-USB cables and this supports 5V/2.3A it can adequately power the Jetson board.
   * [Adafruit Power Supply](https://www.adafruit.com/product/1995) - This is the recommended Micro USB supply that NVIDIA lists.
-  * [CanaKit Raspberry Pi Power Supply](https://smile.amazon.com/CanaKit-Raspberry-Supply-Adapter-Listed/dp/B00MARDJZ4) - This is als a 5V/2.5A RPi Supply like the Adafruit one and should work for the Jetson boards. It's on Amazon for $9.99 with free shipping. 
+  * [CanaKit Raspberry Pi Power Supply](https://smile.amazon.com/CanaKit-Raspberry-Supply-Adapter-Listed/dp/B00MARDJZ4) - This is als a 5V/2.5A RPi Supply like the Adafruit one and should work for the Jetson boards. It's on Amazon for $9.99 with free shipping.
   * [Blog about Barrel Connector](https://desertbot.io/blog/jetson-nano-power-supply-barrel-vs-micro-usb) - There is a discussion here about why you would want a barrel connector and the fact you can get 5V/4A... this might be highly recommended if you are going to keep a monitor, keyboard, mouse connected and get a fan powered by the board.
 * Optional Case - There are a few cases for the boards on Amazon, a few come with active cooling fans, which might be useful especially if you are going to move/carry the boards around or need active cooling.
 * Optional Switch - Depending on your home network, you may need additional wired connections for the Jetson Nano board. I recommend getting an inexpensive gigabit switch for this. You optionally could run your own network off or your laptop through the switch if you don't have access to your router or want to use the boards on campus too. You want gigabit as that is the max the boards support and likely will be a limiting factor in our MPI applications on this cluster regardless.
@@ -286,14 +286,50 @@ If this is the case you'll want specify the tcp interface that communication occ
 $ mpirun --mca btl_tcp_if_include eth0 <rest of mpirun command>
 ```
 
-I ran into this on one of the cluster builds after the Ansible playbook ran but not another. Everything still works, just requires a bit more information specified from you as the user to run MPI. 
+I ran into this on one of the cluster builds after the Ansible playbook ran but not another. Everything still works, just requires a bit more information specified from you as the user to run MPI.
 
 
 ## Step-by-Step Cluster Instructions
 
-If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first. I highly recommend you use the [Ansible instructions](#ansible-instructions)
+If I find time I will add these instructions, but going to focus on assignments, lectures, and other aspects of this class first. I highly recommend you use the [Ansible playbook approach](#ansible-instructions), as it makes things easier for you and has been tested/validated against a fresh set of Jetson boards after they were built that it works. I'm going to high level give you the step by step instructions here but there may be some level of familiarity with basic Ubuntu system administration needed and I may forget some steps. I'm also not testing that all the steps are included here.
 
-**TODO Add the steps**
+### Update your machines
+
+Log into each of your Jetson boards and fully update them:
+
+```bash
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt dist-upgrade
+$ sudo apt autoremove
+```
+
+### Setup master/primary Jetson so it can SSH into itself and secondary boards with SSH Keys
+
+Now that you have them fully updated the boards, create a SSH public/private key (like you did earlier) for the primary Jetson board. Copy this SSH key identity to itself and the worker Jetson boards and test that you can ssh into jn1, jn2, etc without passwords once completed. This is necessary both for OpenMPI in the future, but we'll be able to use a nifty distributed shell tool to speed up the rest of the steps if we can do this as well.
+
+### Install PDSH
+
+Install [pdsh](https://github.com/chaos/pdsh) onto your machines, it's in the Ubuntu package manager so it's reasonably easy:
+
+```bash
+$ sudo apt update
+$ sudo apt install pdsh
+## We'll need to configure pdsh to use ssh and need a root shell to do this
+$ sudo -s
+# echo "ssh" > /etc/pdsh/rcmd_default
+# exit
+$
+```
+
+Now we can run one command to run multiple commands across all our nodes. The following example would run the echo command on all our nodes and print "Hello World"
+
+```bash
+$ pdsh -w 192.168.1.[2-3] echo "Hello World"
+```
+
+
+
 
 ## Linpack Benchmarks
 
