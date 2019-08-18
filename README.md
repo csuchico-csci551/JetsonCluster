@@ -239,7 +239,7 @@ Now that you have ansible installed and working with your inventory you can use 
     * Numpy library for python3
 * **spark.yml**
   * **Optional Playbook**
-  * If you install Apache Spark, you should install the Python playbook first. 
+  * If you install Apache Spark, you should install the Python playbook first.
   * If you choose this will setup the following
     * OpenJDK8
     * Apache Spark
