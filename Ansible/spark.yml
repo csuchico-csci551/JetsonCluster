@@ -34,12 +34,12 @@
     - name: Download Spark Code
       become: "yes"
       get_url:
-        url: http://apache.mirrors.hoobly.com/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
+        url: http://apache-mirror.8birdsvideo.com/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
         dest: /tmp
         # checksum: "sha512:https://www.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz.sha512"
     - name: Unarchive spark archive to /tmp folder
       unarchive:
-        src: /tmp/spark-2.4.3-bin-hadoop2.7.tgz
+        src: /tmp/spark-2.4.4-bin-hadoop2.7.tgz
         dest: /tmp
         remote_src: yes
     - name: Remove Existing Spark Install in /opt/spark
@@ -49,7 +49,7 @@
         path: /opt/spark
     - name: Move spark folder in tmp to /opt/spark
       become: "yes"
-      command: mv /tmp/spark-2.4.3-bin-hadoop2.7 /opt/spark
+      command: mv /tmp/spark-2.4.4-bin-hadoop2.7 /opt/spark
     - name: Ensure export of Apache Spark Home environment variable is in .bashrc for ansible_ssh_user
       # become: "yes"
       lineinfile:
@@ -66,7 +66,7 @@
       become: "yes"
       file:
         state: absent
-        path: /tmp/spark-2.4.3-bin-hadoop2.7.tgz
+        path: /tmp/spark-2.4.4-bin-hadoop2.7.tgz
 
 - name: Configure Apache Spark Server on primary Jetson Board
   connection: ssh
