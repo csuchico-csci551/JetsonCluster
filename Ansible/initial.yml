@@ -33,6 +33,7 @@
       vars:
         packages:
         - build-essential
+        - cmake
 
     - name: Install a OpenMPI build tools and helper libraries
       become: "yes"
