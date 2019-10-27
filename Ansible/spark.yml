@@ -34,7 +34,7 @@
     - name: Download Spark Code
       become: "yes"
       get_url:
-        url: http://apache-mirror.8birdsvideo.com/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
+        url: http://mirrors.koehn.com/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
         dest: /tmp
         # checksum: "sha512:https://www.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz.sha512"
     - name: Unarchive spark archive to /tmp folder
