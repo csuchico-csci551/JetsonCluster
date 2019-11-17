@@ -1,0 +1,37 @@
+---
+- name: Initial Updates and ZSH
+  connection: ssh
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Remove apt lock file
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock-frontend"
+      become: true
+      tags: apt
+    - name: Update and upgrade apt packages
+      become: "yes"
+      apt:
+        upgrade: "yes"
+        update_cache: "yes"
+        # cache_valid_time: 86400 #One day
+
+    - name: Update, dist-upgrade, and autoremove apt packages
+      become: "yes"
+      apt:
+        upgrade: dist
+        update_cache: "yes"
+        autoremove: "yes"
+        # cache_valid_time: 86400 #One day
+
+    - name: Install zsh
+      become: "yes"
+      apt:
+        name: "{{ packages }}"
+        update_cache: "yes"
+      vars:
+        packages:
+        - zsh
+        - powerline 
+        - fonts-powerline

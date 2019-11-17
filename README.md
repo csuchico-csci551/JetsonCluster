@@ -256,6 +256,10 @@ Now that you have ansible installed and working with your inventory you can use 
   * If you choose, this will install Clang 7 onto your cluster
   * Clang is a llvm compiler and may provide a lot of novel compiler features that GCC does not by default.
   * Clang is necessary for Rust.
+* **zsh.yml**
+  * **Optional Playbook**
+  * If you choose, this will install ZSH and the powerline fonts onto your cluster
+  * It does not force it to be the default shell or add Oh My ZSH currently.
 
 You can run any of the playbooks with the following command structure:
 
