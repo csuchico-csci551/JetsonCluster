@@ -1,0 +1,51 @@
+---
+- name: Configure nodes to run K3s
+  hosts: all
+  connection: ssh
+  gather_facts: True
+  tasks:
+  - name: Download k3s script
+    become: "yes"
+    get_url:
+      url: https://get.k3s.io
+      dest: /tmp/k3s.sh
+      mode: '0440'
+  - name: Install K3s from script
+    become: "yes"
+    ansible.builtin.command: sh - /tmp/k3s.sh
+  - name: Kill all in case server existed before
+    become: "yes"
+    ansible.builtin.command: /usr/local/bin/k3s-killall.sh
+    # when: "'jetson_nano_primary' in group_names"
+  - name: Restart service k3s on server
+    become: "yes"
+    service:
+      name: k3s
+      state: restarted
+    when: "'jetson_nano_primary' in group_names"
+  - name: Get client TOKEN from server
+    become: "yes"
+    ansible.builtin.slurp:
+      src: /var/lib/rancher/k3s/server/node-token
+    register: token
+    when: "'jetson_nano_primary' in group_names"
+  # - name: check token
+  #   debug: msg="{{ token['content'] | b64decode | trim }}"
+  #   when: "'jetson_nano_primary' in group_names"
+  # - name: check token
+  #   debug: msg="{{ hostvars['jn1']['token']['content'] | b64decode | trim }}"
+  #   when: "'jetson_nano_worker' in group_names"
+  - name: Generate k3s.service for agents
+    become: "yes"
+    ansible.builtin.template:
+      src: k3s.service.j2
+      dest: /etc/systemd/system/k3s.service
+    when: "'jetson_nano_worker' in group_names"
+  - name: Restart service k3s on agents
+    become: "yes"
+    service:
+      name: k3s
+      daemon_reload: yes
+      state: restarted
+    when: "'jetson_nano_worker' in group_names"
+
